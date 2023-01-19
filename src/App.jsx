@@ -61,8 +61,10 @@ const Container = styled.div`
             align-items: center;
             justify-content: space-between;
             margin: 20px 0;
+            overflow-y: none;
 
             .todoListText {
+                width: 100%;
                 display: flex;
                 flex-direction: column;
             }
@@ -73,6 +75,8 @@ const Container = styled.div`
 
             span:first-of-type {
                 font-weight: 700;
+                margin-bottom: 5px;
+                word-break: break-all;
             }
 
             span:last-of-type {
@@ -160,7 +164,7 @@ function App() {
                                 <div className="todoListText">
                                     <span>{item.text}</span>
                                     <span>
-                                        Today at 9:00 AM{" "}
+                                        {item.date}
                                         <TiPin className="todoListIcon" />
                                     </span>
                                 </div>
