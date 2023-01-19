@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FiTrash2, FiMoreVertical } from "react-icons/fi";
 import { TiPin, TiPencil } from "react-icons/ti";
 import "./App.css";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { addTodo } from "./features/todos/todosSlice";
 
 const Container = styled.div`
     display: flex;
@@ -27,6 +29,11 @@ const Container = styled.div`
             outline: 0;
             color: #6b7280;
             margin-right: 8px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
         }
     }
 
@@ -75,6 +82,25 @@ const Container = styled.div`
             }
         }
 
+        .noTodoList {
+            width: 100%;
+            display: flex;
+            height: 300px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            h2 {
+                font-weight: 600;
+                font-size: 30px;
+                margin-bottom: 10px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+        }
+
         .todoListIcon {
             color: #6b7280;
             cursor: pointer;
@@ -84,40 +110,77 @@ const Container = styled.div`
 
 function App() {
     const [count, setCount] = useState(0);
+    const [inputValue, setInputValue] = useState("");
+    const todoList = useSelector((state) => state.todos);
+    const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     getTodoList();
+    // }, [dispatch]);
+
+    // function getTodoList() {
+    //     const todos = useSelector((state) => state.todos);
+    // }
+
+    function handleOnSubmit(e) {
+        e.preventDefault();
+        dispatch(addTodo(inputValue));
+        setInputValue("");
+    }
 
     return (
         <div className="App">
             <Container>
-                <motion.div
-                    className="todoListContainer"
-                    animate={{
-                        transform: ["translatey(100px)", "translatey(0px)"],
-                    }}
-                    transition={{
-                        type: "spring",
-                        duration: 1,
-                        damping: 10,
-                        stiffness: 100,
-                    }}
-                >
-                    <div className="todoList">
-                        <div className="todoListText">
-                            <span>Todo 1</span>
-                            <span>
-                                Today at 9:00 AM{" "}
-                                <TiPin className="todoListIcon" />
-                            </span>
-                        </div>
-                        <div className="todoListButton">
-                            <FiMoreVertical className="todoListIcon" />
-                        </div>
-                    </div>
+                <motion.div className="todoListContainer">
+                    {todoList.length <= 0 ? (
+                        <>
+                            <div className="noTodoList">
+                                <h2>Ops!</h2>
+                                <h3>Looks like you don't have any todo!</h3>
+                            </div>
+                        </>
+                    ) : (
+                        todoList.map((item, index) => (
+                            <motion.div
+                                className="todoList"
+                                key={item.id}
+                                animate={{
+                                    transform: [
+                                        "translatey(100px)",
+                                        "translatey(0px)",
+                                    ],
+                                }}
+                                transition={{
+                                    type: "spring",
+                                    duration: 1,
+                                    damping: 10,
+                                    stiffness: 100,
+                                }}
+                            >
+                                <div className="todoListText">
+                                    <span>{item.text}</span>
+                                    <span>
+                                        Today at 9:00 AM{" "}
+                                        <TiPin className="todoListIcon" />
+                                    </span>
+                                </div>
+                                <div className="todoListButton">
+                                    <FiMoreVertical className="todoListIcon" />
+                                </div>
+                            </motion.div>
+                        ))
+                    )}
                 </motion.div>
-                <form>
-                    <input type="text" placeholder="Add todo" />
-                    <div className="iconContainer">
+                <form onSubmit={handleOnSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Add todo"
+                        onChange={(e) => setInputValue(e.target.value)}
+                        value={inputValue}
+                    />
+                    <button className="iconContainer" type="submit">
                         <TiPencil className="iconItem" />
-                    </div>
+                    </button>
                 </form>
             </Container>
         </div>
