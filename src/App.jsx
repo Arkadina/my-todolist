@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { FiTrash2, FiMoreVertical } from "react-icons/fi";
 import { TiPin, TiPencil } from "react-icons/ti";
 import "./App.css";
 import { motion } from "framer-motion";
+import { BiTrash } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
-import { addTodo } from "./features/todos/todosSlice";
+import { addTodo, deleteTodo } from "./features/todos/todosSlice";
 
 const Container = styled.div`
     display: flex;
@@ -118,14 +118,6 @@ function App() {
     const todoList = useSelector((state) => state.todos);
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     getTodoList();
-    // }, [dispatch]);
-
-    // function getTodoList() {
-    //     const todos = useSelector((state) => state.todos);
-    // }
-
     function handleOnSubmit(e) {
         e.preventDefault();
         dispatch(addTodo(inputValue));
@@ -169,7 +161,12 @@ function App() {
                                     </span>
                                 </div>
                                 <div className="todoListButton">
-                                    <FiMoreVertical className="todoListIcon" />
+                                    <BiTrash
+                                        className="todoListIcon"
+                                        onClick={(e) =>
+                                            dispatch(deleteTodo(item.id))
+                                        }
+                                    />
                                 </div>
                             </motion.div>
                         ))

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import moment from "moment/moment";
+import { generateId } from "../../utils/generateId";
 
 export const todosSlice = createSlice({
     name: "todos",
@@ -7,15 +8,19 @@ export const todosSlice = createSlice({
     reducers: {
         addTodo(state, action) {
             const todo = {
-                id: state.length + 1,
+                id: generateId(),
                 text: action.payload,
                 date: moment().calendar(),
             };
             return [...state, todo];
         },
+        deleteTodo(state, action) {
+            const newState = state.filter((item) => item.id != action.payload);
+            return [...newState];
+        },
     },
 });
 
-export const { addTodo } = todosSlice.actions;
+export const { addTodo, deleteTodo } = todosSlice.actions;
 
 export default todosSlice.reducer;
